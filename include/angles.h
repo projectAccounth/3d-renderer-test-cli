@@ -19,7 +19,9 @@ public:
 
 Matrix3d EulerToMatrix(EulerAngles& angle);
 
-Matrix3d EulerToMatrixLH(EulerAngles& angle);
+Matrix3d EulerToMatrixLH_XYZ(EulerAngles& angle);
+Matrix3d EulerToMatrixLH_YXZ(EulerAngles& angle);
+Matrix3d EulerToMatrixLH_ZYX(EulerAngles& angle);
 
 
 void movePointForward(Point3& pointPosition, EulerAngles &angles, double distance);

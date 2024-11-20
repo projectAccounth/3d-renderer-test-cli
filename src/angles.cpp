@@ -27,9 +27,7 @@ Matrix3d EulerToMatrix(EulerAngles& angles) {
     return matrix;
 }
 
-Matrix3d EulerToMatrixLH(EulerAngles& angle) {
-    Matrix3d result;
-
+std::array<Matrix3d, 3> getRotationMatrices(EulerAngles& angle) {
     double sinX = std::sin(angle.pitch), cosX = std::cos(angle.pitch);
     double sinY = std::sin(angle.yaw), cosY = std::cos(angle.yaw);
     double sinZ = std::sin(angle.roll), cosZ = std::cos(angle.roll);
@@ -52,8 +50,23 @@ Matrix3d EulerToMatrixLH(EulerAngles& angle) {
         {0, 0, 1}
     } };
 
-    // Combine rotations: XYZ
-    result = Ry * Rx * Rz;
+    return {Rx, Ry, Rz};
+}
 
-    return result;
+Matrix3d EulerToMatrixLH_YXZ(EulerAngles& angle) {
+    std::array<Matrix3d, 3> finalAngles = getRotationMatrices(angle);
+    // Combine rotations: YXZ
+    return finalAngles[1] * finalAngles[0] * finalAngles[2];
+}
+
+Matrix3d EulerToMatrixLH_XYZ(EulerAngles& angle) {
+    std::array<Matrix3d, 3> finalAngles = getRotationMatrices(angle);
+    // Combine rotations: XYZ
+    return finalAngles[0] * finalAngles[1] * finalAngles[2];
+}
+
+Matrix3d EulerToMatrixLH_ZYX(EulerAngles& angle) {
+    std::array<Matrix3d, 3> finalAngles = getRotationMatrices(angle);
+    // Combine rotations: ZYX
+    return finalAngles[2] * finalAngles[1] * finalAngles[0];
 }

@@ -85,7 +85,7 @@ void transformObject(
 	std::vector<Point3> viewVertices(vertexCount);
 
 	// Step 1: Object Local Transformation
-	Matrix3d objectRotation = EulerToMatrixLH(objectRotationAngles);
+	Matrix3d objectRotation = EulerToMatrixLH_XYZ(objectRotationAngles);
 	for (size_t i = 0; i < vertexCount; ++i) {
 		worldVertices[i] = objectRotation * localVertices[i];
 	}
@@ -96,7 +96,7 @@ void transformObject(
 	}
 
 	// Step 3: Camera Transformation
-	Matrix3d cameraRotation = EulerToMatrixLH(cameraRotationAngles);
+	Matrix3d cameraRotation = EulerToMatrixLH_XYZ(cameraRotationAngles);
 	for (size_t i = 0; i < vertexCount; ++i) {
 		viewVertices[i] = cameraRotation * (worldVertices[i] - cameraPosition);
 	}
@@ -133,11 +133,11 @@ void updateAngles(EulerAngles camRotation, Point3& camPos, Point3& displayPos,
 	const double EPSILON = 1e-6;
 
 	if (d_vs.size() != vertices.size() || projectionPs.size() != vertices.size()) {
-		// std::cerr << "Size mismatch between vectors!" << std::endl;
+		std::cerr << "Size mismatch between vectors!" << std::endl;
 		return;
 	}
 
-	Matrix3d rotationMatrix = EulerToMatrixLH(camRotation);
+	Matrix3d rotationMatrix = EulerToMatrixLH_XYZ(camRotation);
 
 	for (size_t i = 0; i < vertices.size(); ++i) {
 		Point3 relativePos = vertices[i] - camPos;
@@ -164,30 +164,6 @@ void resetAllImages() {
 	system("cls");
 }
 
-void updateImage(std::vector<Point3>& vertices, std::vector<Point2>& projectP, double nearPlane, Point3 displayPosition) {
-	for (int i = 0; i < projectP.size(); i++) {
-		for (int j = 0; j < projectP.size(); j++) {
-			if (i == j) continue;
-
-			bool isAdjacent3D = false;
-			const Point3& pt0_3D = vertices[i];
-			const Point3& pt1_3D = vertices[j];
-			if (pt0_3D.y == pt1_3D.y && pt0_3D.z == pt1_3D.z) {
-				isAdjacent3D = true;
-			}
-			else if (pt0_3D.x == pt1_3D.x && pt0_3D.z == pt1_3D.z) {
-				isAdjacent3D = true;
-			}
-			else if (pt0_3D.x == pt1_3D.x && pt0_3D.y == pt1_3D.y) {
-				isAdjacent3D = true;
-			}
-
-			if (!isAdjacent3D) continue;
-			bresenham(projectP[i], projectP[j]);
-		}
-	}
-}
-
 bool isAdjacent3D(Point3 p0, Point3 p1) {
 	if (p0.y == p1.y && p0.z == p1.z) {
 		return true;
@@ -212,7 +188,7 @@ void anotherImplementation(std::vector<Point3>& vertices,
 
 	EulerAngles finalAngle(-camAngles.pitch, -camAngles.yaw, -camAngles.roll);
 
-	// Matrix3d rotationMatrix = EulerToMatrixLH(finalAngle);
+	// Matrix3d rotationMatrix = EulerToMatrixLH_XYZ(finalAngle);
 
 	for (auto face : boxFaces) {
 
@@ -276,6 +252,5 @@ void updateAll(
 
 	updateAngles(cameraRotationAngles, cameraPosition, displayPosition, d_vs, localVertices, projectedVertices);
 	transformObject(objectRotationAngles, objectWorldPos, cameraRotationAngles, cameraPosition, displayPosition, localVertices, projectedVertices);
-	// updateImage(localVertices, projectedVertices, nearPlane, displayPosition);
 	anotherImplementation(localVertices, projectedVertices, nearPlane, displayPosition, faces, cameraPosition, cameraRotationAngles);
 }
