@@ -1,0 +1,1 @@
+"D:/My Documents/Downloads/mingw32/bin/g++.exe" -std=c++2a -D_WIN32_WINNT=0x0501 -m32 -I"D:/My Documents/Downloads/mingw32/lib" -L"D:/My Documents/Downloads/mingw32/lib" -o -static-libgcc -static-libstdc++ -o ./build/main ./src/*.cpp

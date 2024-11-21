@@ -23,13 +23,12 @@ const double nearPlane = 0.1f;
 #include <cstring>
 #include <cstdlib>
 #include <vector>
-#include <functional>
-#include <variant>
-#include <type_traits>
 #include <array>
 #include <cmath>
 #include <conio.h>
 #include <windows.h>
+
+#define _WIN32_WINNT 0x0501
 
 const std::vector<std::array<int, 4>> faces = {
     {0, 1, 2, 3}, // Bottom face

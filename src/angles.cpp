@@ -32,23 +32,23 @@ std::array<Matrix3d, 3> getRotationMatrices(EulerAngles& angle) {
     double sinY = std::sin(angle.yaw), cosY = std::cos(angle.yaw);
     double sinZ = std::sin(angle.roll), cosZ = std::cos(angle.roll);
 
-    Matrix3d Rx = { {
+    Matrix3d Rx({{
         {1, 0, 0},
         {0, cosX, sinX},
         {0, -sinX, cosX}
-    } };
+    }});
 
-    Matrix3d Ry = { {
+    Matrix3d Ry({{
         {cosY, 0, -sinY},
         {0, 1, 0},
         {sinY, 0, cosY}
-    } };
+    }});
 
-    Matrix3d Rz = { {
+    Matrix3d Rz({{
         {cosZ, sinZ, 0},
         {-sinZ, cosZ, 0},
         {0, 0, 1}
-    } };
+    }});
 
     return {Rx, Ry, Rz};
 }

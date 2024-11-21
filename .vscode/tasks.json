@@ -11,6 +11,7 @@
           "-w",
           "-Wl,-subsystem,console",
           "-lmingw32",
+          "-ftime-report",
           "-o",
           "${workspaceFolder}\\build\\main.exe",
         ],

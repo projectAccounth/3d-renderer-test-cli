@@ -84,31 +84,23 @@ void transformObject(
 	std::vector<Point3> worldVertices(vertexCount);
 	std::vector<Point3> viewVertices(vertexCount);
 
-	// Step 1: Object Local Transformation
 	Matrix3d objectRotation = EulerToMatrixLH_XYZ(objectRotationAngles);
 	for (size_t i = 0; i < vertexCount; ++i) {
 		worldVertices[i] = objectRotation * localVertices[i];
 	}
-
-	// Step 2: World Transformation
 	for (size_t i = 0; i < vertexCount; ++i) {
 		worldVertices[i] = worldVertices[i] + objectWorldPos;
 	}
-
-	// Step 3: Camera Transformation
 	Matrix3d cameraRotation = EulerToMatrixLH_XYZ(cameraRotationAngles);
 	for (size_t i = 0; i < vertexCount; ++i) {
 		viewVertices[i] = cameraRotation * (worldVertices[i] - cameraPosition);
 	}
-
-	// Step 4: Projection with Clipping
-	const double nearPlane = 0.1; // Minimum Z-distance for rendering
+	const double nearPlane = 0.1; 
 	const double EPSILON = 1e-6;
 
 	projectedVertices.resize(vertexCount);
 	for (size_t i = 0; i < vertexCount; ++i) {
 		if (viewVertices[i].z < nearPlane) {
-			// Mark invalid points
 			projectedVertices[i] = { std::nanf(""), std::nanf("") };
 			continue;
 		}
@@ -178,7 +170,7 @@ bool isAdjacent3D(Point3 p0, Point3 p1) {
 }
 
 
-void anotherImplementation(std::vector<Point3>& vertices,
+void updateImage(std::vector<Point3>& vertices,
 	std::vector<Point2>& projectedP,
 	double nearPlane,
 	Point3 displayPosition,
@@ -243,14 +235,27 @@ Point3 calculateCentroid(const std::vector<Point3>& vertices) {
 
 void updateAll(
 	EulerAngles& objectRotationAngles, Point3 objectWorldPos,
-	EulerAngles& cameraRotationAngles, Point3 &cameraPosition,
+	Camera &camera,
 	Point3 &displayPosition,
 	std::vector<Point3>& localVertices,
 	std::vector<Point2>& projectedVertices,
 	std::vector<Vector3>& d_vs
 ) {
 
-	updateAngles(cameraRotationAngles, cameraPosition, displayPosition, d_vs, localVertices, projectedVertices);
-	transformObject(objectRotationAngles, objectWorldPos, cameraRotationAngles, cameraPosition, displayPosition, localVertices, projectedVertices);
-	anotherImplementation(localVertices, projectedVertices, nearPlane, displayPosition, faces, cameraPosition, cameraRotationAngles);
+	updateAngles(camera.cameraAngles, camera.cameraPosition, 
+				 displayPosition, 
+				 d_vs,
+				 localVertices, projectedVertices);
+
+	transformObject(objectRotationAngles, objectWorldPos,
+					camera.cameraAngles, camera.cameraPosition,
+					displayPosition, 
+					localVertices, 
+					projectedVertices);
+
+	updateImage(localVertices, projectedVertices, 
+						  nearPlane, 
+						  displayPosition, 
+						  faces, 
+						  camera.cameraPosition, camera.cameraAngles);
 }

@@ -1,1 +1,1 @@
-g++ ./src/*.cpp --std=c++20 -o ./build/main
+g++ ./src/*.cpp --std=c++14 -o ./build/main

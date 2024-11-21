@@ -5,7 +5,6 @@
 
 #include "mainHeader.h"
 #include "matrix.h"
-#include "point.h"
 
 class EulerAngles {
 public:  

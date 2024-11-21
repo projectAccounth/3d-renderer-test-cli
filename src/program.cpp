@@ -111,5 +111,4 @@ void Program::programControls(EulerAngles& camRotation, Point3& position,
 			}
 		}
 	}
-	std::clog << "Camera rotation angles: (" << camRotation.pitch << ", " << camRotation.yaw << ", " << camRotation.roll << ")\n"; 
 }
